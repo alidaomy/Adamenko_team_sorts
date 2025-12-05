@@ -1,10 +1,76 @@
 ﻿
 #include <iostream>
 #include <fstream>
-#include <list>
-using namespace std;
+#include <string>
+#include <ctime>
+#include <chrono>
 
-int main()
-{
+using namespace std;
+using namespace std::chrono;
+
+template <typename T>
+struct Node {
+    T data;
+    Node* next;
+    Node(T value) : data(value), next(nullptr) {}
+};
+
+// Функция для чтения из файла
+template <typename T>
+Node<T>* readFromFile(const string& filename) {
+    ifstream file(filename);
+    if (!file) return nullptr;
+
+    Node<T>* head = nullptr;
+    Node<T>* tail = nullptr;
+    T value;
+
+    while (file >> value) {
+        Node<T>* newNode = new Node<T>(value);
+        if (!head) head = newNode;
+        else tail->next = newNode;
+        tail = newNode;
+    }
+
+    return head;
+}
+
+
+// Функция проверки сортировки
+template <typename T>
+bool isSorted(Node<T>* head) {
+    while (head && head->next) {
+        if (head->data > head->next->data) return false;
+        head = head->next;
+    }
+    return true;
+}
+
+// Функция печати списка
+template <typename T>
+void printList(Node<T>* head, int limit = 10) {
+    int count = 0;
+    while (head && count < limit) {
+        cout << head->data << " ";
+        head = head->next;
+        count++;
+    }
+    if (head) cout << "...";
+    cout << endl;
+}
+
+//Функция для удаления списка 
+template <typename T>
+void deleteList(Node<T>* head) {
+    while (head) {
+        Node<T>* temp = head;
+        head = head->next;
+        delete temp;
+    }
+}
+
+int main(){
+
+	setlocale(LC_ALL, "Russian");
 
 }
