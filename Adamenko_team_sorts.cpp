@@ -84,6 +84,45 @@ Node<T>* copyList(Node<T>* head) {
     return newHead;
 }
 
+// Тестирование сортировки с замером времени
+template <typename T>
+void testSort(const string& name, Node<T>* (*sortFunc)(Node<T>*), Node<T>* head) {
+    Node<T>* copy = copyList(head);
+
+    auto start = high_resolution_clock::now();
+    copy = sortFunc(copy);
+    auto end = high_resolution_clock::now();
+
+    auto duration = duration_cast<microseconds>(end - start);
+    double time_ms = duration.count() / 1000.0;
+
+    cout << name << ": " << time_ms << " мс";
+    cout << " (Отсортирован: " << (isSorted(copy) ? "Да" : "Нет") << ")" << endl;
+
+    freeList(copy);
+}
+
+//Ульяна
+
+//Ульяна
+
+
+
+//Диана
+
+//Диана
+
+
+
+//Влада
+
+//Влада
+
+
+
+//Лиза
+
+//Лиза
 
 int main(){
 
