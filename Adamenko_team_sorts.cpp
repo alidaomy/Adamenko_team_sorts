@@ -1,93 +1,70 @@
-﻿
-#include <iostream>
+﻿#include <iostream>
 #include <fstream>
 #include <string>
 #include <ctime>
 #include <chrono>
+#include <vector>
 
 using namespace std;
 using namespace std::chrono;
 
-template <typename T>
-struct Node {
-    T data;
-    Node* next;
-    Node(T value) : data(value), next(nullptr) {}
-};
+// Убираем структуру Node, работаем только с вектором
+// template <typename T>
+// struct Node {
+//     T data;
+//     Node* next;
+//     Node(T value) : data(value), next(nullptr) {}
+// };
 
-// Функция для чтения из файла
+// Функция для чтения из файла (возвращает вектор)
 template <typename T>
-Node<T>* readFromFile(const string& filename) {
+vector<T> readFromFile(const string& filename) {
     ifstream file(filename);
-    if (!file) return nullptr;
+    vector<T> data;
 
-    Node<T>* head = nullptr;
-    Node<T>* tail = nullptr;
+    if (!file) return data;
+
     T value;
-
     while (file >> value) {
-        Node<T>* newNode = new Node<T>(value);
-        if (!head) head = newNode;
-        else tail->next = newNode;
-        tail = newNode;
+        data.push_back(value);
     }
 
-    return head;
+    return data;
 }
 
-
-// Функция проверки сортировки
+// Функция проверки сортировки для вектора
 template <typename T>
-bool isSorted(Node<T>* head) {
-    while (head && head->next) {
-        if (head->data > head->next->data) return false;
-        head = head->next;
+bool isSorted(const vector<T>& data) {
+    for (size_t i = 0; i < data.size() - 1; i++) {
+        if (data[i] > data[i + 1]) return false;
     }
     return true;
 }
 
-// Функция печати списка
+// Функция печати вектора
 template <typename T>
-void printList(Node<T>* head, int limit = 10) {
+void printList(const vector<T>& data, int limit = 10) {
     int count = 0;
-    while (head && count < limit) {
-        cout << head->data << " ";
-        head = head->next;
+    for (size_t i = 0; i < data.size() && count < limit; i++) {
+        cout << data[i] << " ";
         count++;
     }
-    if (head) cout << "...";
+    if (data.size() > limit) cout << "...";
     cout << endl;
 }
 
+
+
+// Функция копирования вектора
 template <typename T>
-void freeList(Node<T>* head) {
-    while (head) {
-        Node<T>* temp = head;
-        head = head->next;
-        delete temp;
-    }
+vector<T> copyList(const vector<T>& data) {
+    return vector<T>(data);  // Простое копирование
 }
 
+// Тестирование сортировки с замером времени (для вектора)
 template <typename T>
-Node<T>* copyList(Node<T>* head) {
-    Node<T>* newHead = nullptr;
-    Node<T>* tail = nullptr;
-
-    while (head) {
-        Node<T>* newNode = new Node<T>(head->data);
-        if (!newHead) newHead = newNode;
-        else tail->next = newNode;
-        tail = newNode;
-        head = head->next;
-    }
-
-    return newHead;
-}
-
-// Тестирование сортировки с замером времени
-template <typename T>
-void testSort(const string& name, Node<T>* (*sortFunc)(Node<T>*), Node<T>* head) {
-    Node<T>* copy = copyList(head);
+void testSort(const string& name, vector<T>(*sortFunc)(vector<T>), const vector<T>& data) {
+    vector<T> copy = copyList(data);
 
     auto start = high_resolution_clock::now();
     copy = sortFunc(copy);
@@ -98,8 +75,6 @@ void testSort(const string& name, Node<T>* (*sortFunc)(Node<T>*), Node<T>* head)
 
     cout << name << ": " << time_ms << " мс";
     cout << " (Отсортирован: " << (isSorted(copy) ? "Да" : "Нет") << ")" << endl;
-
-    freeList(copy);
 }
 
 //Ульяна
@@ -125,7 +100,7 @@ void testSort(const string& name, Node<T>* (*sortFunc)(Node<T>*), Node<T>* head)
 //Лиза
 
 
-// Генерация тестовых данных
+// Генерация тестовых данных (оставляем без изменений)
 void generateDataFile(const string& filename, int type) {
     ofstream file(filename);
     srand(time(0));
@@ -175,7 +150,7 @@ void generateDataFile(const string& filename, int type) {
 }
 
 void showMenu() {
-    cout << "\nТЕСТИРОВАНИЕ СОРТИРОВОК НА СПИСКАХ" << endl;
+    cout << "\nТЕСТИРОВАНИЕ СОРТИРОВОК НА ВЕКТОРАХ" << endl;
     cout << "1. 1000 целых чисел (data1.txt)" << endl;
     cout << "2. 10000 целых чисел (data2.txt)" << endl;
     cout << "3. 1000 букв (data3.txt)" << endl;
@@ -185,13 +160,59 @@ void showMenu() {
     cout << "Ваш выбор (1-6): ";
 }
 
-int main(){
+int main() {
+    setlocale(LC_ALL, "Russian");
 
-	setlocale(LC_ALL, "Russian");
+    int choice;
 
+    do {
+        showMenu();
+        cin >> choice;
 
+        if (choice >= 1 && choice <= 5) {
+            string filename = "data" + to_string(choice) + ".txt";
 
+            // Генерируем файл, если нужно
+            generateDataFile(filename, choice);
+
+            switch (choice) {
+            case 1:
+            case 2:
+            case 4: {
+                vector<int> data = readFromFile<int>(filename);
+                if (!data.empty()) {
+                    cout << "\nПервые 10 элементов: ";
+                    printList(data);
+                    cout << "\nРезультаты тестирования:" << endl;
+
+                }
+                break;
+            }
+
+            case 3: {
+                vector<char> data = readFromFile<char>(filename);
+                if (!data.empty()) {
+                    cout << "\nПервые 10 элементов: ";
+                    printList(data);
+                    cout << "\nРезультаты тестирования:" << endl;
+
+                }
+                break;
+            }
+
+            case 5: {
+                vector<float> data = readFromFile<float>(filename);
+                if (!data.empty()) {
+                    cout << "\nПервые 10 элементов: ";
+                    printList(data);
+                    cout << "\nРезультаты тестирования:" << endl;
+
+                }
+                break;
+            }
+            }
+        }
+    } while (choice != 6);
 
     return 0;
-
 }
