@@ -84,7 +84,32 @@ void testSort(const string& name, vector<T>(*sortFunc)(vector<T>), const vector<
 
 
 //Диана
+template <typename T>
+vector<T> shellSort(vector<T> arr) {
+    int n = arr.size();
 
+    // Начинаем с большого промежутка, затем уменьшаем его
+    for (int gap = n / 2; gap > 0; gap /= 2) {
+        // Для каждого промежутка выполняем сортировку вставками
+        for (int i = gap; i < n; i++) {
+            // Сохраняем текущий элемент
+            T current = arr[i];
+            int j = i;
+
+            // Сдвигаем элементы arr[0..i-gap], которые больше current,
+            // на позицию gap вперед
+            while (j >= gap && arr[j - gap] > current) {
+                arr[j] = arr[j - gap];
+                j -= gap;
+            }
+
+            // Вставляем сохраненный элемент в правильную позицию
+            arr[j] = current;
+        }
+    }
+
+    return arr;
+}
 //Диана
 
 
@@ -184,6 +209,7 @@ int main() {
                     cout << "\nПервые 10 элементов: ";
                     printList(data);
                     cout << "\nРезультаты тестирования:" << endl;
+                    testSort("Сортировка Шелла", shellSort<int>, data);
 
                 }
                 break;
@@ -195,6 +221,7 @@ int main() {
                     cout << "\nПервые 10 элементов: ";
                     printList(data);
                     cout << "\nРезультаты тестирования:" << endl;
+                    testSort("Сортировка Шелла", shellSort<char>, data);
 
                 }
                 break;
@@ -206,7 +233,7 @@ int main() {
                     cout << "\nПервые 10 элементов: ";
                     printList(data);
                     cout << "\nРезультаты тестирования:" << endl;
-
+                    testSort("Сортировка Шелла", shellSort<float>, data);
                 }
                 break;
             }
