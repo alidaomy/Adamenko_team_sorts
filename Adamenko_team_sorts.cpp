@@ -64,7 +64,8 @@ vector<T> copyList(const vector<T>& data) {
 // Тестирование сортировки с замером времени (для вектора)
 template <typename T>
 void testSort(const string& name, vector<T>(*sortFunc)(vector<T>), const vector<T>& data) {
-    vector<T> copy = copyList(data);
+
+    vector<T> copy = data;
 
     auto start = high_resolution_clock::now();
     copy = sortFunc(copy);
@@ -307,6 +308,7 @@ int main() {
 
     int choice;
 
+
     do {
         showMenu();
         cin >> choice;
@@ -316,6 +318,12 @@ int main() {
 
             // Генерируем файл, если нужно
             generateDataFile(filename, choice);
+
+            ifstream test(filename);
+            if (!test.good()) {
+                generateDataFile(filename, choice);
+            }
+            test.close();
 
             switch (choice) {
             case 1:
