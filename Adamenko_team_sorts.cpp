@@ -78,7 +78,61 @@ void testSort(const string& name, vector<T>(*sortFunc)(vector<T>), const vector<
 }
 
 //Ульяна
+template <typename T>
+void merge(vector<T>& arr, int left, int mid, int right, vector<T>& temp) { //функция слияния с временным буфером
+    int i = left;      // Индекс начала левой части
+    int j = mid + 1;   // Индекс начала правой части
+    int k = left;      // Индекс в временном массиве
+    // Две части во временный массив
+    while (i <= mid && j <= right) {
+        if (arr[i] <= arr[j]) {
+            temp[k] = arr[i];
+            i++;
+        }
+        else {
+            temp[k] = arr[j];
+            j++;
+        }
+        k++;
+    }
+    // Копирование оставшихся элементов левой части, если есть
+    while (i <= mid) {
+        temp[k] = arr[i];
+        i++;
+        k++;
+    }
+    // Копирование оставшихся элементов правой части, если есть
+    while (j <= right) {
+        temp[k] = arr[j];
+        j++;
+        k++;
+    }
+    // Копирование отсортированных данных обратно в исходный массив
+    for (int idx = left; idx <= right; idx++) {
+        arr[idx] = temp[idx];
+    }
+}
 
+template <typename T>
+void mergeSortHelper(vector<T>& arr, int left, int right, vector<T>& temp) { //вспомогательная функция деления массива
+    if (left < right) {
+        int mid = left + (right - left) / 2;
+
+        mergeSortHelper(arr, left, mid, temp); // Сортировка первой половины
+        mergeSortHelper(arr, mid + 1, right, temp); // Сортировка второй половины
+
+        merge(arr, left, mid, right, temp); // Объединение отсортированных половин
+    }
+}
+
+template <typename T>
+vector<T> mergeSort(vector<T> arr) { //основная функция
+    if (arr.size() > 1) {
+        vector<T> temp(arr.size()); //временный буфер для всей сортировки
+        mergeSortHelper(arr, 0, arr.size() - 1, temp);
+    }
+    return arr;
+}
 //Ульяна
 
 
@@ -210,6 +264,7 @@ int main() {
                     printList(data);
                     cout << "\nРезультаты тестирования:" << endl;
                     testSort("Сортировка Шелла", shellSort<int>, data);
+                    testSort("Сортировка слиянием", mergeSort<int>, data);
 
                 }
                 break;
@@ -222,6 +277,7 @@ int main() {
                     printList(data);
                     cout << "\nРезультаты тестирования:" << endl;
                     testSort("Сортировка Шелла", shellSort<char>, data);
+                    testSort("Сортировка слиянием", mergeSort<char>, data);
 
                 }
                 break;
@@ -234,6 +290,7 @@ int main() {
                     printList(data);
                     cout << "\nРезультаты тестирования:" << endl;
                     testSort("Сортировка Шелла", shellSort<float>, data);
+                    testSort("Сортировка слиянием", mergeSort<float>, data);
                 }
                 break;
             }
