@@ -4,17 +4,10 @@
 #include <ctime>
 #include <chrono>
 #include <vector>
+#include <iomanip>
 
 using namespace std;
 using namespace std::chrono;
-
-// Убираем структуру Node, работаем только с вектором
-// template <typename T>
-// struct Node {
-//     T data;
-//     Node* next;
-//     Node(T value) : data(value), next(nullptr) {}
-// };
 
 // Функция для чтения из файла (возвращает вектор)
 template <typename T>
@@ -53,18 +46,56 @@ void printList(const vector<T>& data, int limit = 10) {
     cout << endl;
 }
 
+// Структура для даты
+struct Date {
+    int day, month, year;
 
+    Date() : day(1), month(1), year(2000) {}
+    Date(int d, int m, int y) : day(d), month(m), year(y) {}
+
+    // Операторы сравнения для сортировки
+    bool operator>(const Date& other) const {
+        if (year != other.year) return year > other.year;
+        if (month != other.month) return month > other.month;
+        return day > other.day;
+    }
+
+    bool operator<=(const Date& other) const {
+        return !(*this > other);
+    }
+
+    bool operator<(const Date& other) const {
+        if (year != other.year) return year < other.year;
+        if (month != other.month) return month < other.month;
+        return day < other.day;
+    }
+
+    bool operator==(const Date& other) const {
+        return day == other.day && month == other.month && year == other.year;
+    }
+};
+
+// Операторы ввода/вывода для Date
+istream& operator>>(istream& is, Date& date) {
+    char dot1, dot2;
+    is >> date.day >> dot1 >> date.month >> dot2 >> date.year;
+    return is;
+}
+
+ostream& operator<<(ostream& os, const Date& date) {
+    os << date.day << "." << date.month << "." << date.year;
+    return os;
+}
 
 // Функция копирования вектора
 template <typename T>
 vector<T> copyList(const vector<T>& data) {
-    return vector<T>(data);  // Простое копирование
+    return vector<T>(data);
 }
 
-// Тестирование сортировки с замером времени (для вектора)
+// Тестирование сортировки с замером времени
 template <typename T>
 void testSort(const string& name, vector<T>(*sortFunc)(vector<T>), const vector<T>& data) {
-
     vector<T> copy = data;
 
     auto start = high_resolution_clock::now();
@@ -243,7 +274,7 @@ vector<T> insertionSort(vector<T> arr) {
 //Лиза
 
 
-// Генерация тестовых данных (оставляем без изменений)
+// Генерация тестовых данных
 void generateDataFile(const string& filename, int type) {
     ofstream file(filename);
     srand(time(0));
@@ -264,14 +295,12 @@ void generateDataFile(const string& filename, int type) {
         break;
 
     case 3:
-    {
         for (int i = 0; i < 1000; i++) {
             char letter = 'a' + rand() % 26;
             file << letter << " ";
         }
         cout << "Создан файл data3.txt с 1000 английских букв" << endl;
         break;
-    }
 
     case 4:
         for (int i = 1000; i >= 1; i--) {
@@ -287,6 +316,33 @@ void generateDataFile(const string& filename, int type) {
         }
         cout << "Создан файл data5.txt с 1000 дробных чисел" << endl;
         break;
+
+    case 6:
+        for (int i = 0; i < 1000; i++) {
+            int day = 1 + rand() % 28;
+            int month = 1 + rand() % 12;
+            int year = 2000 + rand() % 25;
+            file << day << "." << month << "." << year << " ";
+        }
+        cout << "Создан файл data6.txt с 1000 дат" << endl;
+        break;
+
+    case 7:
+    {
+        const char* words[] = {
+            "apple", "banana", "cherry", "date", "elderberry",
+            "fig", "grape", "honeydew", "kiwi", "lemon",
+            "mango", "nectarine", "orange", "pear", "quince",
+            "raspberry", "strawberry", "tangerine", "watermelon"
+        };
+        int wordCount = sizeof(words) / sizeof(words[0]);
+
+        for (int i = 0; i < 1000; i++) {
+            file << words[rand() % wordCount] << " ";
+        }
+        cout << "Создан файл data7.txt с 1000 слов" << endl;
+        break;
+    }
     }
 
     file.close();
@@ -299,8 +355,10 @@ void showMenu() {
     cout << "3. 1000 букв (data3.txt)" << endl;
     cout << "4. 1000 чисел в обратном порядке (data4.txt)" << endl;
     cout << "5. 1000 дробных чисел (data5.txt)" << endl;
-    cout << "6. Выход" << endl;
-    cout << "Ваш выбор (1-6): ";
+    cout << "6. 1000 дат (data6.txt)" << endl;
+    cout << "7. 1000 слов (data7.txt)" << endl;
+    cout << "8. Выход" << endl;
+    cout << "Ваш выбор (1-8): ";
 }
 
 int main() {
@@ -308,20 +366,20 @@ int main() {
 
     int choice;
 
-
     do {
         showMenu();
         cin >> choice;
 
-        if (choice >= 1 && choice <= 5) {
+        if (choice >= 1 && choice <= 7) {
             string filename = "data" + to_string(choice) + ".txt";
 
-            // Генерируем файл, если нужно
-            generateDataFile(filename, choice);
-
+            // Проверяем существование файла
             ifstream test(filename);
             if (!test.good()) {
                 generateDataFile(filename, choice);
+            }
+            else {
+                cout << "Файл " << filename << " уже существует. Используем его." << endl;
             }
             test.close();
 
@@ -338,7 +396,6 @@ int main() {
                     testSort("Сортировка слиянием", mergeSort<int>, data);
                     testSort("Быстрая сортировка", quickSort<int>, data);
                     testSort("Сортировка вставками", insertionSort<int>, data);
-
                 }
                 break;
             }
@@ -370,9 +427,37 @@ int main() {
                 }
                 break;
             }
+
+            case 6: {
+                vector<Date> data = readFromFile<Date>(filename);
+                if (!data.empty()) {
+                    cout << "\nПервые 10 элементов: ";
+                    printList(data);
+                    cout << "\nРезультаты тестирования:" << endl;
+                    testSort("Сортировка Шелла", shellSort<Date>, data);
+                    testSort("Сортировка слиянием", mergeSort<Date>, data);
+                    testSort("Быстрая сортировка", quickSort<Date>, data);
+                    testSort("Сортировка вставками", insertionSort<Date>, data);
+                }
+                break;
+            }
+
+            case 7: {
+                vector<string> data = readFromFile<string>(filename);
+                if (!data.empty()) {
+                    cout << "\nПервые 10 элементов: ";
+                    printList(data);
+                    cout << "\nРезультаты тестирования:" << endl;
+                    testSort("Сортировка Шелла", shellSort<string>, data);
+                    testSort("Сортировка слиянием", mergeSort<string>, data);
+                    testSort("Быстрая сортировка", quickSort<string>, data);
+                    testSort("Сортировка вставками", insertionSort<string>, data);
+                }
+                break;
+            }
             }
         }
-    } while (choice != 6);
+    } while (choice != 8);
 
     return 0;
 }
