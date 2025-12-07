@@ -175,7 +175,26 @@ vector<T> shellSort(vector<T> arr) {
 
 
 //Лиза
+template <typename T>
+vector<T> insertionSort(vector<T> arr) {
+    int n = arr.size();
 
+    for (int i = 1; i < n; i++) {
+        T key = arr[i];
+        int j = i - 1;
+
+        // Сдвигаем элементы больше key на одну позицию вправо
+        while (j >= 0 && arr[j] > key) {
+            arr[j + 1] = arr[j];
+            j--;
+        }
+
+        // Вставляем key на правильную позицию
+        arr[j + 1] = key;
+    }
+
+    return arr;
+}
 //Лиза
 
 
