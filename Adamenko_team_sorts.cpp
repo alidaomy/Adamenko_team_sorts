@@ -169,7 +169,50 @@ vector<T> shellSort(vector<T> arr) {
 
 
 //Влада
+template <typename T>
+int partition(vector<T>& arr, int low, int high) {
+    // Выбираем опорный элемент
+    T pivot = arr[high];
 
+    // Индекс для элемента, который будет разделять массив
+    int i = low - 1;
+
+    // Проходим по всем элементам от low до high-1
+    for (int j = low; j <= high - 1; j++) {
+        if (arr[j] <= pivot) {
+            i++;  // Увеличиваем индекс разделителя
+            swap(arr[i], arr[j]);  // Меняем местами
+        }
+    }
+
+    // Ставим опорный элемент на правильную позицию
+    swap(arr[i + 1], arr[high]);
+
+    // Возвращаем индекс опорного элемента
+    return i + 1;
+}
+
+template <typename T>
+void quickSortHelper(vector<T>& arr, int low, int high) {
+    if (low < high) {
+        // Находим индекс опорного элемента
+        int pivotIndex = partition(arr, low, high);
+
+        // Рекурсивно сортируем левую часть
+        quickSortHelper(arr, low, pivotIndex - 1);
+
+        // Рекурсивно сортируем правую часть
+        quickSortHelper(arr, pivotIndex + 1, high);
+    }
+}
+
+template <typename T>
+vector<T> quickSort(vector<T> arr) {
+    if (arr.size() > 1) {
+        quickSortHelper(arr, 0, arr.size() - 1);
+    }
+    return arr;
+}
 //Влада
 
 
@@ -285,6 +328,7 @@ int main() {
                     cout << "\nРезультаты тестирования:" << endl;
                     testSort("Сортировка Шелла", shellSort<int>, data);
                     testSort("Сортировка слиянием", mergeSort<int>, data);
+                    testSort("Быстрая сортировка", quickSort<int>, data);
                     testSort("Сортировка вставками", insertionSort<int>, data);
 
                 }
@@ -299,6 +343,7 @@ int main() {
                     cout << "\nРезультаты тестирования:" << endl;
                     testSort("Сортировка Шелла", shellSort<char>, data);
                     testSort("Сортировка слиянием", mergeSort<char>, data);
+                    testSort("Быстрая сортировка", quickSort<char>, data);
                     testSort("Сортировка вставками", insertionSort<char>, data);
                 }
                 break;
@@ -312,6 +357,7 @@ int main() {
                     cout << "\nРезультаты тестирования:" << endl;
                     testSort("Сортировка Шелла", shellSort<float>, data);
                     testSort("Сортировка слиянием", mergeSort<float>, data);
+                    testSort("Быстрая сортировка", quickSort<float>, data);
                     testSort("Сортировка вставками", insertionSort<float>, data);
                 }
                 break;
