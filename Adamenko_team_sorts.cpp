@@ -361,6 +361,23 @@ void showMenu() {
     cout << "Ваш выбор (1-8): ";
 }
 
+template <typename T>
+void testAllSorts(const vector<T>& data) {
+    if (!data.empty()) {
+        cout << "\nПервые 10 элементов: ";
+        printList(data);
+        cout << "\nРезультаты тестирования:" << endl;
+        testSort("Сортировка Шелла", shellSort<T>, data);
+        testSort("Сортировка слиянием", mergeSort<T>, data);
+        testSort("Быстрая сортировка", quickSort<T>, data);
+        testSort("Сортировка вставками", insertionSort<T>, data);
+    }
+    else {
+        cout << "Файл пуст или не удалось прочитать данные." << endl;
+    }
+}
+
+
 int main() {
     setlocale(LC_ALL, "Russian");
 
@@ -388,71 +405,31 @@ int main() {
             case 2:
             case 4: {
                 vector<int> data = readFromFile<int>(filename);
-                if (!data.empty()) {
-                    cout << "\nПервые 10 элементов: ";
-                    printList(data);
-                    cout << "\nРезультаты тестирования:" << endl;
-                    testSort("Сортировка Шелла", shellSort<int>, data);
-                    testSort("Сортировка слиянием", mergeSort<int>, data);
-                    testSort("Быстрая сортировка", quickSort<int>, data);
-                    testSort("Сортировка вставками", insertionSort<int>, data);
-                }
+                testAllSorts(data);
                 break;
             }
 
             case 3: {
                 vector<char> data = readFromFile<char>(filename);
-                if (!data.empty()) {
-                    cout << "\nПервые 10 элементов: ";
-                    printList(data);
-                    cout << "\nРезультаты тестирования:" << endl;
-                    testSort("Сортировка Шелла", shellSort<char>, data);
-                    testSort("Сортировка слиянием", mergeSort<char>, data);
-                    testSort("Быстрая сортировка", quickSort<char>, data);
-                    testSort("Сортировка вставками", insertionSort<char>, data);
-                }
+                testAllSorts(data);
                 break;
             }
 
             case 5: {
                 vector<float> data = readFromFile<float>(filename);
-                if (!data.empty()) {
-                    cout << "\nПервые 10 элементов: ";
-                    printList(data);
-                    cout << "\nРезультаты тестирования:" << endl;
-                    testSort("Сортировка Шелла", shellSort<float>, data);
-                    testSort("Сортировка слиянием", mergeSort<float>, data);
-                    testSort("Быстрая сортировка", quickSort<float>, data);
-                    testSort("Сортировка вставками", insertionSort<float>, data);
-                }
+                testAllSorts(data);
                 break;
             }
 
             case 6: {
                 vector<Date> data = readFromFile<Date>(filename);
-                if (!data.empty()) {
-                    cout << "\nПервые 10 элементов: ";
-                    printList(data);
-                    cout << "\nРезультаты тестирования:" << endl;
-                    testSort("Сортировка Шелла", shellSort<Date>, data);
-                    testSort("Сортировка слиянием", mergeSort<Date>, data);
-                    testSort("Быстрая сортировка", quickSort<Date>, data);
-                    testSort("Сортировка вставками", insertionSort<Date>, data);
-                }
+                testAllSorts(data);
                 break;
             }
 
             case 7: {
                 vector<string> data = readFromFile<string>(filename);
-                if (!data.empty()) {
-                    cout << "\nПервые 10 элементов: ";
-                    printList(data);
-                    cout << "\nРезультаты тестирования:" << endl;
-                    testSort("Сортировка Шелла", shellSort<string>, data);
-                    testSort("Сортировка слиянием", mergeSort<string>, data);
-                    testSort("Быстрая сортировка", quickSort<string>, data);
-                    testSort("Сортировка вставками", insertionSort<string>, data);
-                }
+                testAllSorts(data);
                 break;
             }
             }
