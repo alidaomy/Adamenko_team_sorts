@@ -175,6 +175,7 @@ vector<T> shellSort(vector<T> arr) {
 
 
 //Лиза
+int dndn;
 template <typename T>
 vector<T> insertionSort(vector<T> arr) {
     int n = arr.size();
@@ -284,6 +285,7 @@ int main() {
                     cout << "\nРезультаты тестирования:" << endl;
                     testSort("Сортировка Шелла", shellSort<int>, data);
                     testSort("Сортировка слиянием", mergeSort<int>, data);
+                    testSort("Сортировка вставками", insertionSort<int>, data);
 
                 }
                 break;
@@ -297,7 +299,7 @@ int main() {
                     cout << "\nРезультаты тестирования:" << endl;
                     testSort("Сортировка Шелла", shellSort<char>, data);
                     testSort("Сортировка слиянием", mergeSort<char>, data);
-
+                    testSort("Сортировка вставками", insertionSort<char>, data);
                 }
                 break;
             }
@@ -310,6 +312,7 @@ int main() {
                     cout << "\nРезультаты тестирования:" << endl;
                     testSort("Сортировка Шелла", shellSort<float>, data);
                     testSort("Сортировка слиянием", mergeSort<float>, data);
+                    testSort("Сортировка вставками", insertionSort<float>, data);
                 }
                 break;
             }
