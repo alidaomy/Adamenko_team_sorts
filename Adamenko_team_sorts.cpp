@@ -111,11 +111,10 @@ void testSort(const string& name, vector<T>(*sortFunc)(vector<T>), const vector<
 
 //Ульяна
 template <typename T>
-void merge(vector<T>& arr, int left, int mid, int right, vector<T>& temp) { //функция слияния с временным буфером
-    int i = left;      // Индекс начала левой части
-    int j = mid + 1;   // Индекс начала правой части
-    int k = left;      // Индекс в временном массиве
-    // Две части во временный массив
+void merge(vector<T>& arr, int left, int mid, int right, vector<T>& temp) { 
+    int i = left;      
+    int j = mid + 1;  
+    int k = left;      
     while (i <= mid && j <= right) {
         if (arr[i] <= arr[j]) {
             temp[k] = arr[i];
@@ -127,40 +126,37 @@ void merge(vector<T>& arr, int left, int mid, int right, vector<T>& temp) { //ф
         }
         k++;
     }
-    // Копирование оставшихся элементов левой части, если есть
     while (i <= mid) {
         temp[k] = arr[i];
         i++;
         k++;
     }
-    // Копирование оставшихся элементов правой части, если есть
     while (j <= right) {
         temp[k] = arr[j];
         j++;
         k++;
     }
-    // Копирование отсортированных данных обратно в исходный массив
     for (int idx = left; idx <= right; idx++) {
         arr[idx] = temp[idx];
     }
 }
 
 template <typename T>
-void mergeSortHelper(vector<T>& arr, int left, int right, vector<T>& temp) { //вспомогательная функция деления массива
+void mergeSortHelper(vector<T>& arr, int left, int right, vector<T>& temp) { 
     if (left < right) {
         int mid = left + (right - left) / 2;
 
-        mergeSortHelper(arr, left, mid, temp); // Сортировка первой половины
-        mergeSortHelper(arr, mid + 1, right, temp); // Сортировка второй половины
+        mergeSortHelper(arr, left, mid, temp); 
+        mergeSortHelper(arr, mid + 1, right, temp); 
 
-        merge(arr, left, mid, right, temp); // Объединение отсортированных половин
+        merge(arr, left, mid, right, temp);
     }
 }
 
 template <typename T>
-vector<T> mergeSort(vector<T> arr) { //основная функция
+vector<T> mergeSort(vector<T> arr) { 
     if (arr.size() > 1) {
-        vector<T> temp(arr.size()); //временный буфер для всей сортировки
+        vector<T> temp(arr.size());
         mergeSortHelper(arr, 0, arr.size() - 1, temp);
     }
     return arr;
@@ -174,22 +170,18 @@ template <typename T>
 vector<T> shellSort(vector<T> arr) {
     int n = arr.size();
 
-    // Начинаем с большого промежутка, затем уменьшаем его
     for (int gap = n / 2; gap > 0; gap /= 2) {
-        // Для каждого промежутка выполняем сортировку вставками
+
         for (int i = gap; i < n; i++) {
-            // Сохраняем текущий элемент
+
             T current = arr[i];
             int j = i;
 
-            // Сдвигаем элементы arr[0..i-gap], которые больше current,
-            // на позицию gap вперед
             while (j >= gap && arr[j - gap] > current) {
                 arr[j] = arr[j - gap];
                 j -= gap;
             }
 
-            // Вставляем сохраненный элемент в правильную позицию
             arr[j] = current;
         }
     }
@@ -203,24 +195,20 @@ vector<T> shellSort(vector<T> arr) {
 //Влада
 template <typename T>
 int partition(vector<T>& arr, int low, int high) {
-    // Выбираем опорный элемент
     T pivot = arr[high];
 
-    // Индекс для элемента, который будет разделять массив
     int i = low - 1;
 
-    // Проходим по всем элементам от low до high-1
     for (int j = low; j <= high - 1; j++) {
         if (arr[j] <= pivot) {
-            i++;  // Увеличиваем индекс разделителя
-            swap(arr[i], arr[j]);  // Меняем местами
+            i++;
+            swap(arr[i], arr[j]);
         }
     }
 
     // Ставим опорный элемент на правильную позицию
     swap(arr[i + 1], arr[high]);
 
-    // Возвращаем индекс опорного элемента
     return i + 1;
 }
 
@@ -250,7 +238,6 @@ vector<T> quickSort(vector<T> arr) {
 
 
 //Лиза
-int dndn;
 template <typename T>
 vector<T> insertionSort(vector<T> arr) {
     int n = arr.size();
@@ -259,13 +246,11 @@ vector<T> insertionSort(vector<T> arr) {
         T key = arr[i];
         int j = i - 1;
 
-        // Сдвигаем элементы больше key на одну позицию вправо
         while (j >= 0 && arr[j] > key) {
             arr[j + 1] = arr[j];
             j--;
         }
 
-        // Вставляем key на правильную позицию
         arr[j + 1] = key;
     }
 
@@ -294,7 +279,7 @@ void generateDataFile(const string& filename, int type) {
         cout << "Создан файл data2.txt с 10000 целых чисел" << endl;
         break;
 
-    case 3:
+    case 3:  // 1000 букв
         for (int i = 0; i < 1000; i++) {
             char letter = 'a' + rand() % 26;
             file << letter << " ";
@@ -302,7 +287,7 @@ void generateDataFile(const string& filename, int type) {
         cout << "Создан файл data3.txt с 1000 английских букв" << endl;
         break;
 
-    case 4:
+    case 4:  // 1000 чисел в обратном порядке  
         for (int i = 1000; i >= 1; i--) {
             file << i << " ";
         }
